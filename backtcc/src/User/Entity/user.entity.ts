@@ -1,15 +1,16 @@
+import { Ad } from "src/Adds/Entity/ads.entity";
 import { TipoUser } from "src/Enuns/TipoUser.enum";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Users{
+export class Users {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
     name: string;
 
-    @Column({unique: true})
+    @Column({ unique: true })
     email: string;
 
     @Column()
@@ -24,5 +25,8 @@ export class Users{
         default: TipoUser.PRODUTOR
     })
     role: TipoUser;
+
+    @OneToMany(() => Ad, (ads) => ads.user)
+    ads: Ad[];
 
 }

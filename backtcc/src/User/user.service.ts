@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Users } from "./Entity/user.entity";
 import { Repository } from "typeorm";
@@ -34,7 +34,11 @@ export class UserService {
         return user;
     }
 
-    async update(id: number, dto: UpdateUserDto){
+    async update(id: number, dto: UpdateUserDto, userFromTokem: any){
+        if(userFromTokem.role !== "ADIMIN" && userFromTokem.userId !== id){
+            throw new ForbiddenException("Voce não tem permição para atualizar esse perfil")
+        }
+
         const user = await this.userRepo.preload({
             id: id,
             ...dto,

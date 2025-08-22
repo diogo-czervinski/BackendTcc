@@ -54,4 +54,10 @@ export class UserService {
         await this.userRepo.remove(user)
         return ("Usuario removido com sucesso")
     }
+
+    async findByEmail(email: string){
+        return await this.userRepo.findOne({where: {email}});
+    }
+
+
 }

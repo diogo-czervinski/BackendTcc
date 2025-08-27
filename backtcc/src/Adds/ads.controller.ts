@@ -4,6 +4,7 @@ import { CreateAdsDto } from "./dto/createads.dto";
 import { JwtAuthGuard } from "src/Auth/jwt-auth.guard";
 import { RolesGuard } from "src/Auth/roles.guard";
 import { Roles } from "src/Auth/roles.decorator";
+import { TipoUser } from "src/Enuns/TipoUser.enum";
 
 @Controller('ads')
 export class AdsController{
@@ -11,7 +12,7 @@ export class AdsController{
 
     @Post()
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('PRODUTOR')
+    @Roles(TipoUser.PRODUTOR)
     create(@Body() dto: CreateAdsDto, @Request() req){
         const userId = req.user.userId;
         return this.adsService.create(userId, dto)

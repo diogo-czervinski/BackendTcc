@@ -16,7 +16,7 @@ export class AuthService{
 
         
         const isMach = await bcrypt.compare(pass, user.password)
-        if(!isMach)throw new UnauthorizedException("credenciais invalidas") 
+        if(!isMach)throw new UnauthorizedException("Credenciais invalidas") 
 
 
         const payload = {sub: user.id, email: user.email, role: user.role};

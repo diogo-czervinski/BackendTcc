@@ -31,4 +31,11 @@ export class CommentService{
 
         return await this.commentRepo.save(newComment)
     }
+
+    async findAllCommentsForQuestion(idQuestion: number){
+        const comment = await this.commentRepo.find({
+            where: {id: idQuestion},
+            relations: ["question"]
+        })
+    }
 }

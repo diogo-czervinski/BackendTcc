@@ -24,4 +24,8 @@ export class QuestionService {
 
         return await this.questionRepo.save(newQuestion)
     }
+
+    findall(){
+        return this.questionRepo.find()
+    }
 }

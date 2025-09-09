@@ -23,7 +23,6 @@ export class UserController {
         return this.userService.findById(id)
     }
 
-    // ROTA PARA O ADMIN (ou casos genéricos)
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
     updateUserById(
@@ -44,5 +43,17 @@ export class UserController {
     @Delete(':id')
     delete(@Param('id', ParseIntPipe) id: number) {
         return this.userService.delete(id)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('profile/me') // A nossa nova rota GET /user/profile/me
+    getProfile(@Request() req) {
+        // 'req.user' contém o payload do token que você definiu no AuthService
+        // Vamos assumir que o ID do utilizador está em 'req.user.sub'
+        const userId = req.user.userId;
+
+        // Agora, usamos o seu serviço para encontrar o utilizador completo no banco de dados
+        // Isto é seguro porque o ID vem do token, não do cliente.
+        return this.userService.findById(userId);
     }
 }

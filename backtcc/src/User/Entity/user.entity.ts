@@ -1,5 +1,6 @@
 import { Ad } from "src/Adds/Entity/ads.entity";
 import { TipoUser } from "src/Enuns/TipoUser.enum";
+import { Questions } from "src/Questions/entity/question.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -28,5 +29,8 @@ export class Users {
 
     @OneToMany(() => Ad, (ads) => ads.user)
     ads: Ad[];
+
+    @OneToMany(()=> Questions, questions => questions.user)
+    questions: Questions[];
 
 }

@@ -1,5 +1,6 @@
+import { Comment } from "src/Comments/entity/comment.entity";
 import { Users } from "src/User/Entity/user.entity";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Questions{
@@ -14,4 +15,7 @@ export class Questions{
 
     @ManyToOne(() => Users, (user) => user.questions) 
     user: Users;
+
+    @OneToMany(()=> Comment, comments => comments.question)
+    comments: Comment[];
 }

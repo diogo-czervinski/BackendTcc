@@ -5,6 +5,7 @@ import { UserModule } from './User/user.module';
 import { AuthModule } from './Auth/auth.module';
 import { AdsModule } from './Adds/ads.module';
 import { QuestionModule } from './Questions/question.module';
+import { CommentModule } from './Comments/comment.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { QuestionModule } from './Questions/question.module';
     AuthModule,
     AdsModule,
     QuestionModule,
+    CommentModule,
     TypeOrmModule.forRootAsync({ useClass: PostgresConfg}) 
   ],
 })

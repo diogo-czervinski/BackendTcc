@@ -1,4 +1,5 @@
 import { Ad } from "src/Adds/Entity/ads.entity";
+import { Comment } from "src/Comments/entity/comment.entity";
 import { TipoUser } from "src/Enuns/TipoUser.enum";
 import { Questions } from "src/Questions/entity/question.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -32,5 +33,8 @@ export class Users {
 
     @OneToMany(()=> Questions, questions => questions.user)
     questions: Questions[];
+
+    @OneToMany(()=> Comment, comments => comments.user )
+    comments: Comment[];
 
 }

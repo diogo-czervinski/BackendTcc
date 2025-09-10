@@ -10,7 +10,7 @@ export class QuestionController{
     @Post()
     @UseGuards(JwtAuthGuard)
     crete(@Body() dto: CreateQuestionDto, @Request() req){
-        const userId = req.user.sub
+        const userId = req.user.userId
         return this.questionService.create(userId, dto)
     }
 

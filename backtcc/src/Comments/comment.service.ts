@@ -7,21 +7,21 @@ import { CreateCommentDto } from "./dto/createComment.dto";
 import { Comment } from "./entity/comment.entity";
 
 @Injectable()
-export class CommentService{
+export class CommentService {
     constructor(
         @InjectRepository(Comment) private commentRepo: Repository<Comment>,
         @InjectRepository(Users) private userRepo: Repository<Users>,
         @InjectRepository(Questions) private questionRepo: Repository<Questions>
-    ){}
+    ) { }
 
 
-    async create (idUser: number, idQuestion: number, dto: CreateCommentDto){
+    async create(idUser: number, idQuestion: number, dto: CreateCommentDto) {
 
-        const user = await this.userRepo.findOne({where: {id: idUser}})
-        if(!user) throw new NotFoundException("Usuario não encontrado")
+        const user = await this.userRepo.findOne({ where: { id: idUser } })
+        if (!user) throw new NotFoundException("Usuario não encontrado")
 
-        const question = await this.questionRepo.findOne({where: {id: idQuestion}})
-        if(!question) throw new NotFoundException("Questão não encontrada");
+        const question = await this.questionRepo.findOne({ where: { id: idQuestion } })
+        if (!question) throw new NotFoundException("Questão não encontrada");
 
         const newComment = this.commentRepo.create({
             ...dto,
@@ -32,10 +32,10 @@ export class CommentService{
         return await this.commentRepo.save(newComment)
     }
 
-    async findAllCommentsForQuestion(idQuestion: number){
-        const comment = await this.commentRepo.find({
-            where: {id: idQuestion},
-            relations: ["question"]
-        })
+    async findQuestionWithComments(idQuestion: number) {
+        return this.questionRepo.findOne({
+            where: { id: idQuestion },
+            relations: ["user", "comments", "comments.user"],
+        });
     }
 }

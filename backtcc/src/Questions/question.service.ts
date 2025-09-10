@@ -26,6 +26,8 @@ export class QuestionService {
     }
 
     findall(){
-        return this.questionRepo.find()
+        return this.questionRepo.find({
+            relations: ["user"]
+        })
     }
 }

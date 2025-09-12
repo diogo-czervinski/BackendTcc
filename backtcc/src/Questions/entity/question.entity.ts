@@ -1,4 +1,5 @@
 import { Comment } from "src/Comments/entity/comment.entity";
+import { QuestionImage } from "src/questionsImage/Entity/image.entity";
 import { Users } from "src/User/Entity/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -18,4 +19,8 @@ export class Questions{
 
     @OneToMany(()=> Comment, comments => comments.question)
     comments: Comment[];
+
+
+  @OneToMany(() => QuestionImage, (image) => image.question, { cascade: true })
+  images: QuestionImage[];
 }

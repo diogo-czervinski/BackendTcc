@@ -35,7 +35,7 @@ export class CommentService {
     async findQuestionWithComments(idQuestion: number) {
         return this.questionRepo.findOne({
             where: { id: idQuestion },
-            relations: ["user", "comments", "comments.user"],
+            relations: ["user", "comments", "comments.user","images"],
         });
     }
 }

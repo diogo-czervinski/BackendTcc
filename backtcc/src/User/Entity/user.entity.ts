@@ -31,10 +31,12 @@ export class Users {
     @OneToMany(() => Ad, (ads) => ads.user)
     ads: Ad[];
 
-    @OneToMany(()=> Questions, questions => questions.user)
+    @OneToMany(() => Questions, questions => questions.user)
     questions: Questions[];
 
-    @OneToMany(()=> Comment, comments => comments.user )
+    @OneToMany(() => Comment, comments => comments.user)
     comments: Comment[];
+
+
 
 }

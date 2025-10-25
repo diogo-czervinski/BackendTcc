@@ -7,6 +7,9 @@ import {
   UseGuards,
   UploadedFiles,
   UseInterceptors,
+  Delete,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { JwtAuthGuard } from 'src/Auth/jwt-auth.guard';
@@ -17,7 +20,7 @@ import * as path from 'path';
 
 @Controller('questions')
 export class QuestionController {
-  constructor(private readonly questionService: QuestionService) {}
+  constructor(private readonly questionService: QuestionService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -54,5 +57,22 @@ export class QuestionController {
   @UseGuards(JwtAuthGuard)
   findAll() {
     return this.questionService.findall();
+  }
+
+  @Get("/me")
+  @UseGuards(JwtAuthGuard)
+  findMyQuestions(@Request() req) {
+    const userId = req.user.userId;
+    return this.questionService.findMyQuestions(userId)
+  }
+
+  @Delete(":idQuestion")
+  @UseGuards(JwtAuthGuard)
+  delete(
+    @Param("idQuestion", ParseIntPipe) idQuestion: number,
+    @Request() req
+  ){
+    const userId = req.user.userId;
+    return this.questionService.delete(idQuestion, userId)
   }
 }

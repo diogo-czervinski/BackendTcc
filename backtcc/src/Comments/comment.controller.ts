@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Request, UseGuards } from "@nestjs/common";
 import { CommentService } from "./comment.service";
 import { JwtAuthGuard } from "src/Auth/jwt-auth.guard";
 import { CreateCommentDto } from "./dto/createComment.dto";
@@ -24,5 +24,15 @@ export class CommenstController {
         @Param("idQuestion", ParseIntPipe) idQuestion: number,
     ) {
         return this.commentService.findQuestionWithComments(idQuestion);
+    }
+
+    @Delete(":idComment")
+    @UseGuards(JwtAuthGuard)
+    async delete(
+        @Param("idComment", ParseIntPipe) idComment: number,
+        @Request() req
+    ){
+        const userId = req.user.userId;
+        return this.commentService.delete(idComment, userId)
     }
 }

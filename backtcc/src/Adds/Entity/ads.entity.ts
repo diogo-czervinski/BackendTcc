@@ -1,10 +1,12 @@
 
+import { QuestionImage } from 'src/questionsImage/Entity/image.entity';
 import { Users } from 'src/User/Entity/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,6 +22,9 @@ export class Ad {
   @Column()
   description: string; 
 
+  @Column()
+  localizacao: string;
+
   @ManyToOne(() => Users, (user) => user.ads) 
   user: Users;
 
@@ -28,4 +33,7 @@ export class Ad {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => QuestionImage, (image) => image.ad, { cascade: true })
+  images: QuestionImage[];
 }

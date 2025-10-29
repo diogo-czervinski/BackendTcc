@@ -38,6 +38,7 @@ export class QuestionService {
   findall() {
     return this.questionRepo.find({
       relations: ["user", "images"],
+      take: 10
     });
   }
 
@@ -47,6 +48,7 @@ export class QuestionService {
         user: { id: idUser }
       },
       relations: ['user', 'images'],
+      take: 10
     })
     return questions
   }

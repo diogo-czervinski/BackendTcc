@@ -37,6 +37,7 @@ export class Users {
     @OneToMany(() => Comment, comments => comments.user)
     comments: Comment[];
 
-
+    @Column({ nullable: true })
+    avatarUrl: string;
 
 }

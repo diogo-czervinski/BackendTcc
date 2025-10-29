@@ -1,7 +1,7 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 import { TipoUser } from "src/Enuns/TipoUser.enum";
 
-export class CreateUserDto{
+export class CreateUserDto {
     @IsString()
     name: string;
 
@@ -17,5 +17,8 @@ export class CreateUserDto{
     tel: string;
 
     @IsEnum(TipoUser)
-    role: TipoUser
+    role: TipoUser;
+
+    @IsOptional()
+    avatarUrl?: string;
 }

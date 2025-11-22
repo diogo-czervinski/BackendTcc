@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Users } from "./Entity/user.entity";
 import { Repository } from "typeorm";
@@ -12,13 +12,18 @@ export class UserService {
     constructor(@InjectRepository(Users) private userRepo: Repository<Users>) { }
 
     async create(dto: CreateUserDto) {
+        const existing = await this.findByEmail(dto.email);
+        if (existing) {
+            throw new ConflictException('E-mail já cadastrado');
+        }
+
         const sal = 10;
         const hashsenha = await bcrypt.hash(dto.password, sal);
 
         const user = this.userRepo.create({
             ...dto,
             password: hashsenha,
-            avatarUrl: dto.avatarUrl, 
+            avatarUrl: dto.avatarUrl,
         });
 
         return this.userRepo.save(user);
@@ -35,28 +40,30 @@ export class UserService {
     }
 
     async update(id: number, dto: UpdateUserDto, userFromTokem: any) {
-        if (userFromTokem.role !== "ADIMIN" && userFromTokem.userId !== id) {
-            throw new ForbiddenException("Voce não tem permição para atualizar esse perfil")
+        if (userFromTokem.userId !== id && userFromTokem.role !== "ADMIN") {
+            throw new UnauthorizedException("Usuário não autorizado");
         }
 
         const user = await this.userRepo.preload({
-            id: id,
+            id,
             ...dto,
-        })
+        });
 
         if (!user) {
-            throw new NotFoundException("Usuario não encontrado")
+            throw new NotFoundException("Usuário não encontrado");
         }
 
-        return this.userRepo.save(user) + ("Usuario " + user.name + "atualizado com sucesso");
+        return this.userRepo.save(user); // ← antes estava errado!
     }
 
-    async delete(id: number) {
-        const user = await this.userRepo.findOne({ where: { id } })
-        if (!user) throw new NotFoundException("Usuario não encontrado")
 
-        await this.userRepo.remove(user)
-        return ("Usuario removido com sucesso")
+    async delete(id: number, userFromToken: any) {
+        if (userFromToken.userId !== id && userFromToken.role !== "ADMIN") {
+            throw new UnauthorizedException("Usuário não autorizado");
+        }
+
+        await this.userRepo.delete(id);
+        return { message: "Usuário deletado com sucesso" };
     }
 
     async findByEmail(email: string) {

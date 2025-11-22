@@ -5,13 +5,15 @@ import { Users } from "src/User/Entity/user.entity";
 import { Repository } from "typeorm";
 import { CreateCommentDto } from "./dto/createComment.dto";
 import { Comment } from "./entity/comment.entity";
+import { CommentGateway } from "./comment.gateway";
 
 @Injectable()
 export class CommentService {
     constructor(
         @InjectRepository(Comment) private commentRepo: Repository<Comment>,
         @InjectRepository(Users) private userRepo: Repository<Users>,
-        @InjectRepository(Questions) private questionRepo: Repository<Questions>
+        @InjectRepository(Questions) private questionRepo: Repository<Questions>,
+        private readonly commentGateway: CommentGateway
     ) { }
 
 
@@ -29,13 +31,27 @@ export class CommentService {
             question
         })
 
-        return await this.commentRepo.save(newComment)
+        const savedComment = await this.commentRepo.save(newComment);
+
+        if (question.user && question.user.id !== idUser) {
+            this.commentGateway.sendNotificationToUser(
+                question.user.id.toString(),
+                {
+                    title: 'Novo comentário!',
+                    body: `${user.name} comentou na sua pergunta: ${dto.text}`,
+                },
+            );
+        }
+
+
+
+        return savedComment;
     }
 
     async findQuestionWithComments(idQuestion: number) {
         return this.questionRepo.findOne({
             where: { id: idQuestion },
-            relations: ["user", "comments", "comments.user","images"],
+            relations: ["user", "comments", "comments.user", "images"],
         });
     }
 
@@ -43,13 +59,13 @@ export class CommentService {
     async delete(commentId: number, userId: number): Promise<{ message: string }> {
         const comment = await this.commentRepo.findOne({
             where: { id: commentId },
-            relations: ["user", "question", "question.user"], 
-            select: { 
+            relations: ["user", "question", "question.user"],
+            select: {
                 id: true,
-                user: true, 
+                user: true,
                 question: {
                     id: true,
-                    user: true, 
+                    user: true,
                 }
             }
         });
@@ -59,7 +75,7 @@ export class CommentService {
         }
 
         const isCommentAuthor = comment.user.id === userId;
-        const isQuestionAuthor = comment.question?.user.id === userId; 
+        const isQuestionAuthor = comment.question?.user.id === userId;
 
         if (!isCommentAuthor && !isQuestionAuthor) {
             throw new UnauthorizedException("Você não tem permissão para excluir este comentário.");

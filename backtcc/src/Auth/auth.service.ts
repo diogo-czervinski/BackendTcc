@@ -19,7 +19,7 @@ export class AuthService{
         if(!isMach)throw new UnauthorizedException("Credenciais invalidas") 
 
 
-        const payload = {sub: user.id, email: user.email, role: user.role};
+        const payload = {sub: user.id, role: user.role};
         return{
             access_token: await this.jwtService.signAsync(payload)
         }

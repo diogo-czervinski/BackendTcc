@@ -6,6 +6,7 @@ import { AuthModule } from './Auth/auth.module';
 import { AdsModule } from './Adds/ads.module';
 import { QuestionModule } from './Questions/question.module';
 import { CommentModule } from './Comments/comment.module';
+import { CommentGateway } from './Comments/comment.gateway';
 
 @Module({
   imports: [
@@ -16,5 +17,6 @@ import { CommentModule } from './Comments/comment.module';
     CommentModule,
     TypeOrmModule.forRootAsync({ useClass: PostgresConfg}) 
   ],
+  providers:[CommentGateway]
 })
 export class AppModule {}
